@@ -42,17 +42,20 @@
 
 - (void)vitals_saveHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
-    HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
-
-    HKUnit *count = [HKUnit countUnit];
-    HKUnit *minute = [HKUnit minuteUnit];
-
+    // parse the sample values from the function arguments
     double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:(double)0];
-    HKUnit *unit = [count unitDividedByUnit:minute];
+    BOOL hasArrythmia = [RCTAppleHealthKit boolFromOptions:input key:@"hasArrythmia" withDefault:NO];
 
+    // define the type and units of the sample
+    HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    HKUnit *unit = [HKUnit unitFromString:@"count/min"];
+
+    
     HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:(double)value];
-
-    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:heartRateType quantity:quantity startDate:[NSDate date] endDate:[NSDate date]];
+    NSDictionary *metadata = @{
+        @"Arrythmia": hasArrythmia ? @"YES" : @"NO"
+    };
+    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:heartRateType quantity:quantity startDate:[NSDate date] endDate:[NSDate date] metadata: metadata];
 
     [self.healthStore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
         if (success) {
@@ -151,6 +154,41 @@
     }];
 }
 
+-(void)vitals_saveBloodPressure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSDate *now = [NSDate date];
+
+    // parse the systolic and diastolic value from the function arguments
+    NSUInteger systolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"sys" withDefault:120];
+    NSUInteger diastolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"dia" withDefault:80];
+
+    // define the HealthKit types and units
+    HKCorrelationType *bloodPressureCorrelationType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    HKUnit *unit = [HKUnit millimeterOfMercuryUnit];
+
+    // create the systolic sample
+    HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantity *systolicQuantity = [HKQuantity quantityWithUnit:unit doubleValue:(double) systolicValue];
+    HKQuantitySample *systolicSample = [HKQuantitySample quantitySampleWithType:systolicType quantity:systolicQuantity startDate:now endDate:now];
+
+    // create the diastolic sample
+    HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    HKQuantity *diastolicQuantity = [HKQuantity quantityWithUnit:unit doubleValue:(double) diastolicValue];
+    HKQuantitySample *diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType quantity:diastolicQuantity startDate:now endDate:now];
+
+    // combine the systolic and diastolic samples into a correlation sample
+    HKCorrelation *bloodPressureCorrelation = [HKCorrelation correlationWithType:bloodPressureCorrelationType startDate:now endDate:now objects: [NSSet setWithObjects:systolicSample, diastolicSample, nil]];
+
+    [self.healthStore saveObject:bloodPressureCorrelation withCompletion: ^(BOOL success, NSError *error) {
+        if (success) {
+             callback(@[[NSNull null], [bloodPressureCorrelation copy]]);
+        } else {
+            NSLog(@"error saving blood pressure sample: %@", error);
+            callback(@[RCTMakeError(@"error saving blood pressure sample", nil, nil)]);
+            return;
+        }
+    }];
+}
 
 - (void)vitals_getRespiratoryRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
