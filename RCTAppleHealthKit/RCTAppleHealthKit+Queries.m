@@ -87,6 +87,7 @@
                             @"value" : @(value),
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
+                            @"metadata" : sample.metadata
                     };
 
                     [data addObject:elem];
@@ -250,6 +251,7 @@
                       @"correlation" : sample,
                       @"startDate" : startDateString,
                       @"endDate" : endDateString,
+                      @"metadata" : sample.metadata
                     };
                     [data addObject:elem];
                 }
