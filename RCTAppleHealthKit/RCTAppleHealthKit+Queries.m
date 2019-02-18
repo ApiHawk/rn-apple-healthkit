@@ -87,7 +87,7 @@
                             @"value" : @(value),
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
-                            @"metadata" : sample.metadata
+                            @"metadata" : sample.metadata ? sample.metadata : [NSNull null]
                     };
 
                     [data addObject:elem];
@@ -251,8 +251,9 @@
                       @"correlation" : sample,
                       @"startDate" : startDateString,
                       @"endDate" : endDateString,
-                      @"metadata" : sample.metadata
+                      @"metadata" : sample.metadata ? sample.metadata : [NSNull null]
                     };
+
                     [data addObject:elem];
                 }
 
