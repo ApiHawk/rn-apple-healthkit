@@ -161,6 +161,7 @@
     // parse the systolic and diastolic value from the function arguments
     NSUInteger systolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"sys" withDefault:120];
     NSUInteger diastolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"dia" withDefault:80];
+    NSDictionary *locationMetadata = [input objectForKey:@"location"];
 
     // define the HealthKit types and units
     HKCorrelationType *bloodPressureCorrelationType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
@@ -176,8 +177,14 @@
     HKQuantity *diastolicQuantity = [HKQuantity quantityWithUnit:unit doubleValue:(double) diastolicValue];
     HKQuantitySample *diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType quantity:diastolicQuantity startDate:now endDate:now];
 
+    // add location metadata if present
+    NSDictionary *metadata = (locationMetadata != (id)[NSNull null]) ? @{
+      @"Latitude": [locationMetadata valueForKey:@"latitude"],
+      @"Longitude": [locationMetadata valueForKey:@"longitude"]
+    } : @{};
+
     // combine the systolic and diastolic samples into a correlation sample
-    HKCorrelation *bloodPressureCorrelation = [HKCorrelation correlationWithType:bloodPressureCorrelationType startDate:now endDate:now objects: [NSSet setWithObjects:systolicSample, diastolicSample, nil]];
+    HKCorrelation *bloodPressureCorrelation = [HKCorrelation correlationWithType:bloodPressureCorrelationType startDate:now endDate:now objects: [NSSet setWithObjects:systolicSample, diastolicSample, nil] metadata:metadata];
 
     [self.healthStore saveObject:bloodPressureCorrelation withCompletion: ^(BOOL success, NSError *error) {
         if (success) {
