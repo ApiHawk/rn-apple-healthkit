@@ -135,11 +135,12 @@
                 HKQuantitySample *bloodPressureDiastolicValue = [bloodPressureValues objectsForType:diastolicType].anyObject;
 
                 NSDictionary *elem = @{
-                                       @"bloodPressureSystolicValue" : @([bloodPressureSystolicValue.quantity doubleValueForUnit:unit]),
-                                       @"bloodPressureDiastolicValue" : @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
-                                       @"startDate" : [sample valueForKey:@"startDate"],
-                                       @"endDate" : [sample valueForKey:@"endDate"],
-                                      };
+                    @"systolic": @([bloodPressureSystolicValue.quantity doubleValueForUnit:unit]),
+                    @"diastolic": @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
+                    @"startDate": [sample valueForKey:@"startDate"],
+                    @"endDate": [sample valueForKey:@"endDate"],
+                    @"metadata": [sample objectForKey:@"metadata"]
+                };
 
                 [data addObject:elem];
             }
