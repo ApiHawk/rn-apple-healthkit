@@ -15,7 +15,7 @@ declare module 'rn-apple-healthkit' {
     saveFood(options: any, callback: (error: string, result: any) => void): void
 
     saveHeartRate(
-      sample: { value: number; hasArrythmia: boolean },
+      sample: { value: number; hasArrhythmia: boolean },
       callback: (error: string, result: any) => void
     ): void
 

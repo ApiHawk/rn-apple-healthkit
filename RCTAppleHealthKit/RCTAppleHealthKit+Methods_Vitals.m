@@ -44,7 +44,7 @@
 {
     // parse the sample values from the function arguments
     double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:(double)0];
-    BOOL hasArrythmia = [RCTAppleHealthKit boolFromOptions:input key:@"hasArrythmia" withDefault:NO];
+    BOOL hasArrhythmia = [RCTAppleHealthKit boolFromOptions:input key:@"hasArrhythmia" withDefault:NO];
 
     // define the type and units of the sample
     HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
@@ -53,7 +53,7 @@
     
     HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:(double)value];
     NSDictionary *metadata = @{
-        @"Arrythmia": hasArrythmia ? @"YES" : @"NO"
+        @"Arrhythmia": hasArrhythmia ? @"YES" : @"NO"
     };
     HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:heartRateType quantity:quantity startDate:[NSDate date] endDate:[NSDate date] metadata: metadata];
 
