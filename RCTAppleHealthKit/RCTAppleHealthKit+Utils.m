@@ -137,8 +137,14 @@
     if([unitString isEqualToString:@"pound"]){
         theUnit = [HKUnit poundUnit];
     }
+    if([unitString isEqualToString:@"kg"]){
+        theUnit = [HKUnit unitFromString:@"kg"];
+    }
     if([unitString isEqualToString:@"meter"]){
         theUnit = [HKUnit meterUnit];
+    }
+    if([unitString isEqualToString:@"cm"]){
+        theUnit = [HKUnit unitFromString:@"cm"];
     }
     if([unitString isEqualToString:@"mile"]){
         theUnit = [HKUnit mileUnit];
