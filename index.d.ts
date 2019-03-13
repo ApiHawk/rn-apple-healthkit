@@ -1,8 +1,8 @@
 declare module 'rn-apple-healthkit' {
   export interface HealthKitPermissions {
     permissions: {
-      read: string[]
-      write: string[]
+      read: HealthPermission[]
+      write: HealthPermission[]
     }
   }
 
@@ -11,8 +11,6 @@ declare module 'rn-apple-healthkit' {
       permissions: HealthKitPermissions,
       callback: (error: string, result: any) => void
     ): void
-
-    saveFood(options: any, callback: (error: string, result: any) => void): void
 
     saveHeartRate(
       sample: { value: number; hasArrhythmia: boolean },
@@ -26,20 +24,25 @@ declare module 'rn-apple-healthkit' {
 
     isAvailable(callback: (error: any, results: boolean) => void): void
 
-    getDateOfBirth(
-      options: any,
-      callback: (error: any, results: HealthDateOfBirth) => void
-    ): void
-
     getLatestHeight(
       options: HealthUnitOptions,
       callback: (err: string, results: HealthValue) => void
     ): void
 
+    saveHeight(
+      options: { value: number; unit: HealthUnit},
+      callback: (error: string, result: any) => void
+    ): voidk
+
     getLatestWeight(
       options: HealthUnitOptions,
       callback: (err: string, results: HealthValue) => void
     ): void
+
+    saveWeight(
+      options: { value: number; unit: HealthUnit},
+      callback: (error: string, result: any) => void
+    ): voidk
 
     getHeartRateSamples(
       options: HealthBloodPressureQuery,
@@ -50,6 +53,21 @@ declare module 'rn-apple-healthkit' {
       options: HealthBloodPressureQuery,
       callback: (err: any, results: HealthBloodPressureResult[]) => void
     ): void
+
+    getBiologicalSex(
+      input: null,
+      callback: (err: any, result: HealthBiologicalSexResult) => void
+    ): void
+
+    getDateOfBirth(
+      input: null,
+      callback: (err: any, result: HealthDateOfBirth) => void
+    ): void
+
+    Constants: {
+      Permissions: { [key in keyof HealthPermission]: HealthPermission }
+      Units: { [key in keyof HealthUnit]: HealthUnit }
+    }
   }
 
   export interface HealthDateOfBirth {
@@ -90,29 +108,106 @@ declare module 'rn-apple-healthkit' {
     metadata?: { [key: string]: any }
   }
 
-  export enum HealthUnit {
-    bpm = 'bpm',
-    calorie = 'calorie',
-    celsius = 'celsius',
-    count = 'count',
-    day = 'day',
-    fahrenheit = 'fahrenheit',
-    foot = 'foot',
-    gram = 'gram',
-    hour = 'hour',
-    inch = 'inch',
-    joule = 'joule',
-    meter = 'meter',
-    mgPerdL = 'mgPerdL',
-    mile = 'mile',
-    minute = 'minute',
-    mmhg = 'mmhg',
-    mmolPerL = 'mmolPerL',
-    percent = 'percent',
-    pound = 'pound',
-    second = 'second'
+  export interface HealthBiologicalSexResult {
+    value: 'unknown' | 'male' | 'female' | 'other'
+  }
+
+  export type HealthUnit = {
+    bpm: 'bpm'
+    calorie: 'calorie'
+    celsius: 'celsius'
+    count: 'count'
+    day: 'day'
+    fahrenheit: 'fahrenheit'
+    foot: 'foot'
+    gram: 'gram'
+    hour: 'hour'
+    inch: 'inch'
+    joule: 'joule'
+    meter: 'meter'
+    cm: 'cm'
+    mgPerdL: 'mgPerdL'
+    mile: 'mile'
+    minute: 'minute'
+    mmhg: 'mmhg'
+    mmolPerL: 'mmolPerL'
+    percent: 'percent'
+    pound: 'pound'
+    kilogram: 'kg'
+    second: 'second'
+  }
+
+  export type HealthPermission = {
+    ActiveEnergyBurned: 'ActiveEnergyBurned'
+    AppleExerciseTime: 'AppleExerciseTime'
+    BasalEnergyBurned: 'BasalEnergyBurned'
+    BiologicalSex: 'BiologicalSex'
+    BloodGlucose: 'BloodGlucose'
+    BloodPressureDiastolic: 'BloodPressureDiastolic'
+    BloodPressureSystolic: 'BloodPressureSystolic'
+    BodyFatPercentage: 'BodyFatPercentage'
+    BodyMass: 'BodyMass'
+    BodyMassIndex: 'BodyMassIndex'
+    BodyTemperature: 'BodyTemperature'
+    DateOfBirth: 'DateOfBirth'
+    Biotin: 'Biotin'
+    Caffeine: 'Caffeine'
+    Calcium: 'Calcium'
+    Carbohydrates: 'Carbohydrates'
+    Chloride: 'Chloride'
+    Cholesterol: 'Cholesterol'
+    Copper: 'Copper'
+    EnergyConsumed: 'EnergyConsumed'
+    FatMonounsaturated: 'FatMonounsaturated'
+    FatPolyunsaturated: 'FatPolyunsaturated'
+    FatSaturated: 'FatSaturated'
+    FatTotal: 'FatTotal'
+    Fiber: 'Fiber'
+    Folate: 'Folate'
+    Iodine: 'Iodine'
+    Iron: 'Iron'
+    Magnesium: 'Magnesium'
+    Manganese: 'Manganese'
+    Molybdenum: 'Molybdenum'
+    Niacin: 'Niacin'
+    PantothenicAcid: 'PantothenicAcid'
+    Phosphorus: 'Phosphorus'
+    Potassium: 'Potassium'
+    Protein: 'Protein'
+    Riboflavin: 'Riboflavin'
+    Selenium: 'Selenium'
+    Sodium: 'Sodium'
+    Sugar: 'Sugar'
+    Thiamin: 'Thiamin'
+    VitaminA: 'VitaminA'
+    VitaminB12: 'VitaminB12'
+    VitaminB6: 'VitaminB6'
+    VitaminC: 'VitaminC'
+    VitaminD: 'VitaminD'
+    VitaminE: 'VitaminE'
+    VitaminK: 'VitaminK'
+    Zinc: 'Zinc'
+    Water: 'Water'
+    DistanceCycling: 'DistanceCycling'
+    DistanceWalkingRunning: 'DistanceWalkingRunning'
+    FlightsClimbed: 'FlightsClimbed'
+    HeartRate: 'HeartRate'
+    Height: 'Height'
+    LeanBodyMass: 'LeanBodyMass'
+    MindfulSession: 'MindfulSession'
+    NikeFuel: 'NikeFuel'
+    RespiratoryRate: 'RespiratoryRate'
+    SleepAnalysis: 'SleepAnalysis'
+    StepCount: 'StepCount'
+    Steps: 'Steps'
+    Weight: 'Weight'
   }
 
   const appleHealthKit: AppleHealthKit
   export default appleHealthKit
+
+  export const HealthKitPermissions: {
+    [key in keyof HealthPermission]: HealthPermission
+  }
+  export const HealthKitUnits: { [key in keyof HealthUnit]: HealthUnit }
 }

@@ -16,6 +16,7 @@ export const Units = {
   inch: "inch",
   joule: "joule",
   meter: "meter",
+  cm: "cm",
   mgPerdL: "mgPerdL",
   mile: "mile",
   minute: "minute",
@@ -23,5 +24,6 @@ export const Units = {
   mmolPerL: "mmolPerL",
   percent: "percent",
   pound: "pound",
+  kilogram: "kg",
   second: "second"
 }

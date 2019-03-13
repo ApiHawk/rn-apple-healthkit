@@ -13,4 +13,6 @@ let HealthKit = Object.assign({}, AppleHealthKit, {
 });
 
 export default HealthKit
-module.exports = HealthKit;
+
+export const HealthKitUnits = Units
+export const HealthKitPermissions = Permissions
