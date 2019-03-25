@@ -64,6 +64,16 @@ declare module 'rn-apple-healthkit' {
       callback: (err: any, result: HealthDateOfBirth) => void
     ): void
 
+    getSleepSamples(
+      query: HealthGenericQuery,
+      callback: (err: any, result: HealthValue[]) => void
+    )
+
+    getDailyStepCountSamples(
+      query: HealthGenericQuery,
+      callback: (err: any, result: HealthValue[]) => void
+    )
+
     Constants: {
       Permissions: { [key in keyof HealthPermission]: HealthPermission }
       Units: { [key in keyof HealthUnit]: HealthUnit }
@@ -90,6 +100,12 @@ declare module 'rn-apple-healthkit' {
     startDate: string // required
     endDate?: string // optional; default now
     ascending?: boolean // optional; default false
+    limit?: number // optional; default no limit
+  }
+
+  export interface HealthGenericQuery {
+    startDate: string // required
+    endDate?: string // optional; default now
     limit?: number // optional; default no limit
   }
 
