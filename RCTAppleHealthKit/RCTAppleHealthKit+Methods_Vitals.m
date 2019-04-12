@@ -199,6 +199,40 @@
     }];
 }
 
+- (void)vitals_deleteBloodPressureSample:(NSString *)sampleId callback:(RCTResponseSenderBlock)callback
+{
+    if ([sampleId length] == 0) {
+        return callback(@[[NSNull null], @FALSE]);
+    }
+
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString: sampleId];
+    NSPredicate *predicate = [HKQuery predicateForObjectWithUUID:uuid];
+    HKCorrelationType *type = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+
+    HKCorrelationQuery *query = [[HKCorrelationQuery alloc] initWithType:type predicate:predicate samplePredicates:nil completion:^(HKCorrelationQuery *query, NSArray *correlations, NSError *error) {
+
+        if (correlations == nil) {
+            return callback(@[[NSNull null], @FALSE]);
+        }
+
+        HKSample *sample = correlations[0];
+        if (sample) {
+            [self.healthStore deleteObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
+                if (error) {
+                     return callback(@[[NSNull null], @FALSE]);
+                }
+
+                return callback(@[[NSNull null], @(success)]);
+            }];
+        } else {
+            return callback(@[[NSNull null], @FALSE]);
+        }
+    }];
+
+    [self.healthStore executeQuery:query];
+}
+
+
 - (void)vitals_getRespiratoryRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     HKQuantityType *respiratoryRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierRespiratoryRate];

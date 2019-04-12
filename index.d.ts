@@ -22,6 +22,8 @@ declare module 'rn-apple-healthkit' {
       callback: (error: string, result: any) => void
     ): void
 
+    deleteBloodPressureSample(sampleId: string, callback: (error: string, result: any) => void)
+
     isAvailable(callback: (error: any, results: boolean) => void): void
 
     getLatestHeight(

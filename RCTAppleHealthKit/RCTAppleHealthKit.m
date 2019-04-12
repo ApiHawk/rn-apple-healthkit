@@ -192,6 +192,11 @@ RCT_EXPORT_METHOD(saveBloodPressure:(NSDictionary*)input callback:(RCTResponseSe
     [self vitals_saveBloodPressure:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(deleteBloodPressureSample:(NSString*)sampleId callback:(RCTResponseSenderBlock) callback)
+{
+    [self vitals_deleteBloodPressureSample:sampleId callback:callback];
+}
+
 RCT_EXPORT_METHOD(getRespiratoryRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self vitals_getRespiratoryRateSamples:input callback:callback];
@@ -264,7 +269,7 @@ RCT_EXPORT_METHOD(saveMindfulSession:(NSDictionary *)input callback:(RCTResponse
         [self.healthStore requestAuthorizationToShareTypes:writeDataTypes readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
             if (!success) {
                 NSString *errMsg = [NSString stringWithFormat:@"Error with HealthKit authorization: %@", error];
-                NSLog(errMsg);
+                NSLog(@"%@", errMsg);
                 callback(@[RCTMakeError(errMsg, nil, nil)]);
                 return;
             } else {
