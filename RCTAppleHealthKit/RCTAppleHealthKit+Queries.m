@@ -82,13 +82,15 @@
 
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
-
+                    NSString *bundleId = [[[sample sourceRevision] source] bundleIdentifier];
+                    
                     NSDictionary *elem = @{
                             @"id": uuid,
-                            @"value" : @(value),
-                            @"startDate" : startDateString,
-                            @"endDate" : endDateString,
-                            @"metadata" : sample.metadata ? sample.metadata : [NSNull null]
+                            @"value": @(value),
+                            @"startDate": startDateString,
+                            @"endDate": endDateString,
+                            @"metadata": sample.metadata ? sample.metadata : [NSNull null],
+                            @"source": bundleId
                     };
 
                     [data addObject:elem];
@@ -229,13 +231,15 @@
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
                     NSString *uuid = [[sample UUID] UUIDString];
+                    NSString *bundleId = [[[sample sourceRevision] source] bundleIdentifier];
 
                     NSDictionary *elem = @{
                       @"id": uuid,
                       @"correlation": sample,
                       @"startDate": startDateString,
                       @"endDate": endDateString,
-                      @"metadata": sample.metadata ? sample.metadata : [NSNull null]
+                      @"metadata": sample.metadata ? sample.metadata : [NSNull null],
+                      @"source": bundleId
                     };
 
                     [data addObject:elem];

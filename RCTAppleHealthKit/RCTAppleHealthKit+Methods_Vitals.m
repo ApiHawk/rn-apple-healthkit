@@ -139,7 +139,8 @@
                     @"diastolic": @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
                     @"startDate": [sample valueForKey:@"startDate"],
                     @"endDate": [sample valueForKey:@"endDate"],
-                    @"metadata": [sample objectForKey:@"metadata"]
+                    @"metadata": [sample objectForKey:@"metadata"],
+                    @"source": [sample objectForKey:@"source"]
                 };
 
                 [data addObject:elem];

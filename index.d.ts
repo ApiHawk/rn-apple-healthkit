@@ -116,6 +116,7 @@ declare module 'rn-apple-healthkit' {
     startDate: string
     endDate: string
     metadata?: { [key: string]: any }
+    source: string
   }
 
   export interface HealthHeartRateResult {
@@ -124,6 +125,7 @@ declare module 'rn-apple-healthkit' {
     startDate: string
     endDate: string
     metadata?: { [key: string]: any }
+    source: string
   }
 
   export interface HealthBiologicalSexResult {
