@@ -110,6 +110,7 @@ declare module 'rn-apple-healthkit' {
   }
 
   export interface HealthBloodPressureResult {
+    id: string
     systolic: number
     diastolic: number
     startDate: string
@@ -118,6 +119,7 @@ declare module 'rn-apple-healthkit' {
   }
 
   export interface HealthHeartRateResult {
+    id: string
     value: number
     startDate: string
     endDate: string

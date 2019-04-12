@@ -49,7 +49,6 @@
     [self.healthStore executeQuery:query];
 }
 
-
 - (void)fetchQuantitySamplesOfType:(HKQuantityType *)quantityType
                               unit:(HKUnit *)unit
                          predicate:(NSPredicate *)predicate
@@ -79,11 +78,13 @@
                 for (HKQuantitySample *sample in results) {
                     HKQuantity *quantity = sample.quantity;
                     double value = [quantity doubleValueForUnit:unit];
+                    NSString *uuid = [[sample UUID] UUIDString];
 
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
 
                     NSDictionary *elem = @{
+                            @"id": uuid,
                             @"value" : @(value),
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
@@ -106,14 +107,6 @@
 
     [self.healthStore executeQuery:query];
 }
-
-
-
-
-
-
-
-
 
 - (void)fetchSleepCategorySamplesForPredicate:(NSPredicate *)predicate
                                    limit:(NSUInteger)lim
@@ -141,7 +134,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
 
                 for (HKCategorySample *sample in results) {
-
+                    NSString *uuid = [[sample UUID] UUIDString];
                     // HKCategoryType *catType = sample.categoryType;
                     NSInteger val = sample.value;
 
@@ -166,9 +159,10 @@
                   }
 
                     NSDictionary *elem = @{
-                            @"value" : valueString,
-                            @"startDate" : startDateString,
-                            @"endDate" : endDateString,
+                            @"id": uuid,
+                            @"value": valueString,
+                            @"startDate": startDateString,
+                            @"endDate": endDateString,
                     };
 
                     [data addObject:elem];
@@ -205,18 +199,6 @@
     [self.healthStore executeQuery:query];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 - (void)fetchCorrelationSamplesOfType:(HKQuantityType *)quantityType
                                  unit:(HKUnit *)unit
                             predicate:(NSPredicate *)predicate
@@ -246,12 +228,14 @@
                 for (HKCorrelation *sample in results) {
                     NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                     NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
+                    NSString *uuid = [[sample UUID] UUIDString];
 
                     NSDictionary *elem = @{
-                      @"correlation" : sample,
-                      @"startDate" : startDateString,
-                      @"endDate" : endDateString,
-                      @"metadata" : sample.metadata ? sample.metadata : [NSNull null]
+                      @"id": uuid,
+                      @"correlation": sample,
+                      @"startDate": startDateString,
+                      @"endDate": endDateString,
+                      @"metadata": sample.metadata ? sample.metadata : [NSNull null]
                     };
 
                     [data addObject:elem];

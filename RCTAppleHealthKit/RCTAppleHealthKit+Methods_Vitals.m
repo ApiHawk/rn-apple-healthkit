@@ -130,11 +130,11 @@
 
             for (NSDictionary *sample in results) {
                 HKCorrelation *bloodPressureValues = [sample valueForKey:@"correlation"];
-
                 HKQuantitySample *bloodPressureSystolicValue = [bloodPressureValues objectsForType:systolicType].anyObject;
                 HKQuantitySample *bloodPressureDiastolicValue = [bloodPressureValues objectsForType:diastolicType].anyObject;
 
                 NSDictionary *elem = @{
+                    @"id": [sample valueForKey: @"id"],
                     @"systolic": @([bloodPressureSystolicValue.quantity doubleValueForUnit:unit]),
                     @"diastolic": @([bloodPressureDiastolicValue.quantity doubleValueForUnit:unit]),
                     @"startDate": [sample valueForKey:@"startDate"],
