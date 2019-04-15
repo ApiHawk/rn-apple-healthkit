@@ -209,8 +209,11 @@
     NSPredicate *predicate = [HKQuery predicateForObjectWithUUID:uuid];
     HKCorrelationType *type = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
 
-    HKCorrelationQuery *query = [[HKCorrelationQuery alloc] initWithType:type predicate:predicate samplePredicates:nil completion:^(HKCorrelationQuery *query, NSArray *correlations, NSError *error) {
-
+    HKCorrelationQuery *query = [[HKCorrelationQuery alloc]
+                                 initWithType:type
+                                 predicate:predicate
+                                 samplePredicates:nil
+                                 completion:^(HKCorrelationQuery *query, NSArray *correlations, NSError *error) {
         if (correlations == nil) {
             return callback(@[[NSNull null], @FALSE]);
         }
@@ -221,6 +224,45 @@
                 if (error) {
                      return callback(@[[NSNull null], @FALSE]);
                 }
+
+                // find the corresponding heart rate sample (if any)
+                // * allow one second more for the end date to account for possible millisecond mismatches
+                NSDate *start = [sample startDate];
+                NSDate *end = [[NSDate alloc] initWithTimeInterval: 1 sinceDate:start];
+                NSPredicate *heartRatePredicate = [HKQuery predicateForSamplesWithStartDate:start
+                                                                                    endDate:end
+                                                                                options:HKQueryOptionStrictStartDate];
+                HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+
+                HKSampleQuery *heartRateQuery = [[HKSampleQuery alloc] initWithSampleType:heartRateType predicate:heartRatePredicate limit:1 sortDescriptors:nil resultsHandler:^(HKSampleQuery * _Nonnull query, NSArray<__kindof HKSample *> * _Nullable results, NSError * _Nullable error) {
+                    if (error) {
+                        NSLog(@"Could not query for heart rate sample. %@", error);
+                        return;
+                    }
+
+                    if (!results || [results count] == 0) {
+                        NSLog(@"Could not find corresponding heart rate sample.");
+                        return;
+                    }
+
+                    HKSample *heartRateSample = results[0];
+   
+                    // delete the corresponding heart rate sample
+                    [self.healthStore deleteObject:heartRateSample withCompletion:^(BOOL success, NSError * _Nullable error) {
+                        if (error) {
+                            NSLog(@"Error while trying to delete heart rate sample. %@", error);
+                            return;
+                        }
+
+                        if (!success) {
+                            NSLog(@"Deleting of heart rate sample failed.");
+                            return;
+                        }
+
+                        return;
+                    }];
+                }];
+                [self.healthStore executeQuery:heartRateQuery];
 
                 return callback(@[[NSNull null], @(success)]);
             }];
