@@ -19,6 +19,7 @@
 
 - (void)isHealthKitAvailable:(RCTResponseSenderBlock)callback;
 - (void)initializeHealthKit:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)hasWritePermission:(NSString *)type callback:(RCTResponseSenderBlock)callback;
 - (void)getModuleInfo:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 
 @end

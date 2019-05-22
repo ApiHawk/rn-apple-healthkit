@@ -76,6 +76,8 @@ declare module 'rn-apple-healthkit' {
       callback: (err: any, result: HealthValue[]) => void
     )
 
+    hasWritePermission(type: string, callback: (err: any, result: boolean) => void)
+
     Constants: {
       Permissions: { [key in keyof HealthPermission]: HealthPermission }
       Units: { [key in keyof HealthUnit]: HealthUnit }
