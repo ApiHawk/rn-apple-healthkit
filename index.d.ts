@@ -76,7 +76,7 @@ declare module 'rn-apple-healthkit' {
       callback: (err: any, result: HealthValue[]) => void
     )
 
-    hasWritePermission(type: string, callback: (err: any, result: boolean) => void)
+    checkWritePermissions(callback: (err: any, result: HealthWritePermissions) => void)
 
     Constants: {
       Permissions: { [key in keyof HealthPermission]: HealthPermission }
@@ -130,6 +130,12 @@ declare module 'rn-apple-healthkit' {
     endDate: string
     metadata?: { [key: string]: any }
     source: string
+  }
+
+  export interface HealthWritePermissions {
+    systolic: boolean
+    diastolic: boolean
+    heartRate: boolean
   }
 
   export interface HealthBiologicalSexResult {

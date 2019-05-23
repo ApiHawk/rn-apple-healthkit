@@ -37,9 +37,9 @@ RCT_EXPORT_METHOD(initHealthKit:(NSDictionary *)input callback:(RCTResponseSende
     [self initializeHealthKit:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(hasWritePermission:(NSString *)type callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(checkWritePermissions:(RCTResponseSenderBlock)callback)
 {
-    [self hasWritePermissionForType:type callback:callback];
+    [self checkHealthKitWritePermissions:callback];
 }
 
 RCT_EXPORT_METHOD(initStepCountObserver:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -288,38 +288,27 @@ RCT_EXPORT_METHOD(saveMindfulSession:(NSDictionary *)input callback:(RCTResponse
     }
 }
 
-- (void)hasWritePermissionForType:(NSString *)type callback:(RCTResponseSenderBlock)callback
+- (void)checkHealthKitWritePermissions:(RCTResponseSenderBlock)callback
 {
-    if ([type isEqualToString:@"heartRate"]) {
-        HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
-        HKAuthorizationStatus status = [self.healthStore authorizationStatusForType:heartRateType];
+    HKQuantityType *heartRateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    HKAuthorizationStatus heartRateStatus = [self.healthStore authorizationStatusForType:heartRateType];
 
-        switch (status) {
-            case HKAuthorizationStatusNotDetermined:
-                return callback(@[[NSNull null], @false]);
-            case HKAuthorizationStatusSharingDenied:
-                return callback(@[[NSNull null], @false]);
-            case HKAuthorizationStatusSharingAuthorized:
-                return callback(@[[NSNull null], @true]);
-        }
-    }
+    HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    HKAuthorizationStatus statusSys = [self.healthStore authorizationStatusForType:systolicType];
+    HKAuthorizationStatus statusDia = [self.healthStore authorizationStatusForType:diastolicType];
 
-    if ([type isEqualToString:@"bloodPressure"]) {
-        HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
-        HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
-        
-        HKAuthorizationStatus statusSys = [self.healthStore authorizationStatusForType:systolicType];
-        HKAuthorizationStatus statusDia = [self.healthStore authorizationStatusForType:diastolicType];
+    BOOL hasSystolicPermission = statusSys == HKAuthorizationStatusSharingAuthorized;
+    BOOL hasDiastolicPermission = statusDia == HKAuthorizationStatusSharingAuthorized;
+    BOOL hasHeartRatePermission = heartRateStatus == HKAuthorizationStatusSharingAuthorized;
 
-        
-        if (statusDia == HKAuthorizationStatusSharingAuthorized && statusSys == HKAuthorizationStatusSharingAuthorized) {
-            return callback(@[[NSNull null], @true]);
-        } else {
-            return callback(@[[NSNull null], @false]);
-        }
-    }
+    NSDictionary *permissions = @{
+       @"heartRate" : @(hasHeartRatePermission),
+       @"systolic" : @(hasSystolicPermission),
+       @"diastolic" : @(hasDiastolicPermission),
+    };
 
-    return callback(@[[NSNull null], @false]);
+    return callback(@[[NSNull null], permissions]);
 }
 
 - (void)getModuleInfo:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
