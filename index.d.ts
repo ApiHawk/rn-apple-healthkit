@@ -13,12 +13,12 @@ declare module 'rn-apple-healthkit' {
     ): void
 
     saveHeartRate(
-      sample: { value: number; hasArrhythmia: boolean },
+      sample: { value: number, hasArrhythmia: boolean, date?: string, syncId?: string },
       callback: (error: string, result: any) => void
     ): void
 
     saveBloodPressure(
-      sample: { sys: number; dia: number },
+      sample: { sys: number, dia: number, date?: string, syncId?: string },
       callback: (error: string, result: any) => void
     ): void
 
