@@ -18,7 +18,7 @@ declare module 'rn-apple-healthkit' {
     ): void
 
     saveBloodPressure(
-      sample: { sys: number, dia: number, date?: string, syncId?: string },
+      sample: { sys: number, dia: number, date?: string, syncId?: string, location?: {latitude: number, longitude: number} | null },
       callback: (error: string, result: any) => void
     ): void
 

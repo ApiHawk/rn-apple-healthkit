@@ -181,14 +181,14 @@
     HKQuantity *diastolicQuantity = [HKQuantity quantityWithUnit:unit doubleValue:(double) diastolicValue];
     HKQuantitySample *diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType quantity:diastolicQuantity startDate:dateCreated endDate:dateCreated];
 
-    NSDictionary *metadata = @{
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary: @{
         @"HKMetadataKeySyncIdentifier": syncId,
         @"HKMetadataKeySyncVersion": @1
-    };
+    }];
 
     // add location metadata if present
     if (locationMetadata != (id)[NSNull null] && [locationMetadata valueForKey:@"latitude"] > 0 && [locationMetadata valueForKey:@"longitude"] > 0) {
-        [metadata setValue:[locationMetadata  valueForKey:@"latitude"] forKey:@"Latitude"];
+        [metadata setValue:[locationMetadata valueForKey:@"latitude"] forKey:@"Latitude"];
         [metadata setValue:[locationMetadata valueForKey:@"longitude"] forKey:@"Longitude"];
     }
 
