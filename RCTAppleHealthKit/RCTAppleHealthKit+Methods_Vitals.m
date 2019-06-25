@@ -165,7 +165,11 @@
     // parse the systolic and diastolic value from the function arguments
     NSUInteger systolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"sys" withDefault:120];
     NSUInteger diastolicValue = [RCTAppleHealthKit uintFromOptions:input key:@"dia" withDefault:80];
+    
+    // parse sample metadata
     NSDictionary *locationMetadata = [input objectForKey:@"location"];
+    BOOL isTakingMedications = [RCTAppleHealthKit boolFromOptions:input key:@"isTakingMedications" withDefault:NO];
+    NSString *hand = [RCTAppleHealthKit stringFromOptions:input key:@"hand" withDefault:@"left"];
 
     // define the HealthKit types and units
     HKCorrelationType *bloodPressureCorrelationType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
@@ -183,7 +187,9 @@
 
     NSMutableDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary: @{
         @"HKMetadataKeySyncIdentifier": syncId,
-        @"HKMetadataKeySyncVersion": @1
+        @"HKMetadataKeySyncVersion": @1,
+        @"Hand": hand,
+        @"IsTakingMedications": isTakingMedications ? @"YES" : @"NO"
     }];
 
     // add location metadata if present

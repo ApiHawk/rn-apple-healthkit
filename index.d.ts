@@ -18,7 +18,7 @@ declare module 'rn-apple-healthkit' {
     ): void
 
     saveBloodPressure(
-      sample: { sys: number, dia: number, date?: string, syncId?: string, location?: {latitude: number, longitude: number} | null },
+      sample: HealthNewBloodPressureSample,
       callback: (error: string, result: any) => void
     ): void
 
@@ -111,6 +111,16 @@ declare module 'rn-apple-healthkit' {
     startDate: string // required
     endDate?: string // optional; default now
     limit?: number // optional; default no limit
+  }
+
+  export interface HealthNewBloodPressureSample {
+    sys: number
+    dia: number
+    date?: string
+    syncId?: string
+    location?: {latitude: number, longitude: number} | null
+    hand: "left" | "right"
+    isTakingMedications: boolean
   }
 
   export interface HealthBloodPressureResult {
